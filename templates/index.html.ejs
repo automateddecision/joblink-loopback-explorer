@@ -25,16 +25,80 @@
       margin: 0;
       background: #fafafa;
     }
+
+    #session-header {
+      position: absolute;
+      top: 0;
+      right: 2em;
+      padding: 2em;
+    }
+
+    #session-header form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #session-header input {
+      min-width: 250px;
+    }
+
+    #session-header .btn.authorize.locked {
+      color: #f93e3e;
+      border-color: #f93e3e;
+    }
   </style>
 </head>
 
 <body>
+  <div id="session-header" class="swagger-ui">
+    <form id="session-form">
+      <label for="session">SESSION</label>
+      <input id="session" type="text" placeholder="id" required>
+      <button id="set-session" class="btn authorize" type="submit">
+        Set Session
+      </button>
+    </form>
+  </div>
+
   <div id="swagger-ui"></div>
 
   <script src="./swagger-ui-bundle.js"> </script>
   <script src="./swagger-ui-standalone-preset.js"> </script>
   <script>
     window.onload = function () {
+
+      // Add funcionality to specify SESSION header
+      let sessionId = '';
+      let activeSession = false;
+
+      document.getElementById('session-form').addEventListener('submit',
+        (e) => {
+          e.preventDefault();
+        });
+
+      const sessionHandler = (e) => {
+        let sessionInput = document.getElementById('session');
+
+        if (!activeSession && sessionInput.validity.valid) {
+          sessionId = sessionInput.value;
+          sessionInput.type = 'password';
+          sessionInput.disabled = true;
+          e.target.innerHTML = 'Remove Session';
+          activeSession = true;
+          e.target.classList.add('locked');
+        } else {
+          sessionId = '';
+          sessionInput.value = '';
+          sessionInput.type = 'text';
+          sessionInput.disabled = false;
+          e.target.innerHTML = 'Set Session';
+          activeSession = false;
+          e.target.classList.remove('locked');
+        }
+      };
+
+      document.getElementById('set-session').addEventListener('click',
+        sessionHandler, {passive: false});
 
       // Build a system
       const ui = SwaggerUIBundle({
@@ -44,6 +108,13 @@
         filter: true,
         defaultModelsExpandDepth: 0,
         defaultModelExpandDepth: 0,
+        requestInterceptor: (req) => {
+          if (! req.loadSpec) {
+              // Add the header to "try it out" calls but not spec fetches
+              req.headers.SESSION = sessionId;
+          }
+          return req;
+        },
         presets: [
           SwaggerUIBundle.presets.apis,
           // SwaggerUIStandalonePreset
