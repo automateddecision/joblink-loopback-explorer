@@ -1,5 +1,5 @@
 {
-  "name": "@loopback/rest-explorer",
+  "name": "joblink-rest-explorer",
   "version": "2.0.3",
   "description": "LoopBack's API Explorer",
   "engines": {
