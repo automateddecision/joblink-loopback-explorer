@@ -1,5 +1,5 @@
 {
-  "name": "joblink-rest-explorer",
+  "name": "@loopback/joblink-rest-explorer",
   "version": "2.0.3",
   "description": "LoopBack's API Explorer",
   "engines": {
@@ -10,7 +10,8 @@
     "clean": "lb-clean loopback-explorer*.tgz dist tsconfig.build.tsbuildinfo package",
     "pretest": "npm run build",
     "test": "lb-mocha \"dist/__tests__/**/*.js\"",
-    "verify": "npm pack && tar xf loopback-explorer*.tgz && tree package && npm run clean"
+    "verify": "npm pack && tar xf loopback-explorer*.tgz && tree package && npm run clean",
+    "postinstall": "npm run build"
   },
   "author": "IBM Corp.",
   "copyright.owner": "IBM Corp.",
@@ -50,8 +51,6 @@
     "access": "public"
   },
   "repository": {
-    "type": "git",
-    "url": "https://github.com/strongloop/loopback-next.git",
-    "directory": "packages/rest-explorer"
+    "type": "git"
   }
 }
